@@ -1,0 +1,146 @@
+package com.easyconnect.pojo;
+
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+/**
+ * DeviceInUsing entity. @author MyEclipse Persistence Tools
+ */
+@Entity
+@Table(name = "DeviceInUsing", schema = "dbo", catalog = "EasyConnect")
+public class DeviceInUsing implements java.io.Serializable {
+
+
+	private Integer deviceId;
+	private DeveloperDevice developerDevice;
+	private String password;
+	private String ip;
+	private Integer port;
+	private Integer state;
+	private Long heartTime;
+	private Set<Message> messages = new HashSet<Message>(0);
+	private Set<UserDevice> userDevices = new HashSet<UserDevice>(0);
+
+
+
+	public DeviceInUsing() {
+	}
+
+	/** minimal constructor */
+	public DeviceInUsing(Integer deviceId, DeveloperDevice developerDevice,
+			String password, Integer state) {
+		this.deviceId = deviceId;
+		this.developerDevice = developerDevice;
+		this.password = password;
+		this.state = state;
+	}
+
+	/** full constructor */
+	public DeviceInUsing(Integer deviceId, DeveloperDevice developerDevice,
+			String password, String ip, Integer port, Integer state,
+			Long heartTime, Set<Message> messages, Set<UserDevice> userDevices) {
+		this.deviceId = deviceId;
+		this.developerDevice = developerDevice;
+		this.password = password;
+		this.ip = ip;
+		this.port = port;
+		this.state = state;
+		this.heartTime = heartTime;
+		this.messages = messages;
+		this.userDevices = userDevices;
+	}
+
+
+	@Id
+	@Column(name = "device_id", unique = true, nullable = false)
+	public Integer getDeviceId() {
+		return this.deviceId;
+	}
+
+	public void setDeviceId(Integer deviceId) {
+		this.deviceId = deviceId;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "developer_device_id", nullable = false)
+	public DeveloperDevice getDeveloperDevice() {
+		return this.developerDevice;
+	}
+
+	public void setDeveloperDevice(DeveloperDevice developerDevice) {
+		this.developerDevice = developerDevice;
+	}
+
+	@Column(name = "password", nullable = false)
+	public String getPassword() {
+		return this.password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	@Column(name = "ip")
+	public String getIp() {
+		return this.ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	@Column(name = "port")
+	public Integer getPort() {
+		return this.port;
+	}
+
+	public void setPort(Integer port) {
+		this.port = port;
+	}
+
+	@Column(name = "state", nullable = false)
+	public Integer getState() {
+		return this.state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
+
+	@Column(name = "heartTime")
+	public Long getHeartTime() {
+		return this.heartTime;
+	}
+
+	public void setHeartTime(Long heartTime) {
+		this.heartTime = heartTime;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "deviceInUsing")
+	public Set<Message> getMessages() {
+		return this.messages;
+	}
+
+	public void setMessages(Set<Message> messages) {
+		this.messages = messages;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "deviceInUsing")
+	public Set<UserDevice> getUserDevices() {
+		return this.userDevices;
+	}
+
+	public void setUserDevices(Set<UserDevice> userDevices) {
+		this.userDevices = userDevices;
+	}
+
+}

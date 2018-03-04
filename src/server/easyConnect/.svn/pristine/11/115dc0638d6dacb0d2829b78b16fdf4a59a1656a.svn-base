@@ -1,0 +1,28 @@
+package com.easyconnect.thread;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+public class ListenerTest implements ServletContextListener {
+	private ThreadTest tt;
+
+	@Override
+	public void contextDestroyed(ServletContextEvent arg0) {
+		// TODO Auto-generated method stub
+		if (tt != null && tt.isInterrupted()) {
+			tt.interrupt();
+		}
+		
+	}
+
+	@Override
+	public void contextInitialized(ServletContextEvent arg0) {
+		// TODO Auto-generated method stub
+		if (tt == null) {
+			tt = new ThreadTest();
+			tt.start();
+		}
+		
+	}
+
+}

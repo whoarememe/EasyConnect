@@ -1,0 +1,14 @@
+<litepal>
+
+    <dbname value="easy_connect"/>
+
+    <version value="1"/>
+
+    <list>
+        <mapping class="drjery.com.easyconnect.pojo.Device"/>
+        <mapping class="drjery.com.easyconnect.pojo.Message"/>
+
+    </list>
+
+
+</litepal>

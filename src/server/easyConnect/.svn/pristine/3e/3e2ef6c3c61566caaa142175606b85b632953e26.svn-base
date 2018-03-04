@@ -1,0 +1,37 @@
+//header组件
+Vue.component('management-header', {
+	template:  "<div class='container'>\
+					<div class='nav-header'>\
+						<a href='#' class='js-fh5co-nav-toggle fh5co-nav-toggle'><i></i></a>\
+						<h1 id='fh5co-logo'><a href='index.html'>EasyConnect</a></h1>\
+						<nav id='fh5co-menu-wrap' role='navigation'>\
+							<ul class='sf-menu' id='fh5co-primary-menu'>\
+								<li><a href='work.html'>首页</a></li>\
+								<li><a href='blog.html'>简介</a></li>\
+								<li><a href='about.html'>文档</a></li>\
+								<li><a href='contact.html'>SDK下载</a></li>\
+								<li>\
+									<a href='services.html' class='fh5co-sub-ddown'>我的后台</a>\
+									 <ul class='fh5co-sub-menu'>\
+									 	<li><a href='left-sidebar.html'>设备管理</a></li>\
+									 	<li><a href='right-sidebar.html'>个人信息</a></li>\
+									</ul>\
+								</li>\
+								<li><a href=''>注销</a></li>\
+							</ul>\
+						</nav>\
+					</div>\
+				</div>"
+
+});
+
+// Vue.component('device-management-table', {
+// 	template:  "<tr>\
+// 					<td>000123456</td>\
+// 					<td>台灯</td>\
+// 					<td>灯类</td>\
+// 					<td>飞利浦-L123456</td>\
+// 					<td>已完成</td>\
+// 					<td><a class='table-option'>详情</a> <a class='table-option'>删除</a></td>\
+// 				</tr>"
+// });

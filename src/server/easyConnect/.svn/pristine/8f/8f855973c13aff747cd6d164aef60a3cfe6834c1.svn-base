@@ -1,0 +1,40 @@
+package com.easyconnect.thread;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
+
+import com.easyconnect.socket.Udp;
+
+public class DealThread extends Thread {
+	private String msg;
+	private ByteBuffer buffer;
+	private DatagramChannel dc;
+	private InetSocketAddress addr;
+	private DealDataInterface ddi;
+	
+	public DealThread(DatagramChannel dc, InetSocketAddress addr, String str, DealDataInterface ddi) {
+		this.msg = str;
+		this.dc = dc;
+		this.addr = addr;
+		this.ddi = ddi;
+	}
+	
+	public void run() {
+//		ByteBuffer b = ByteBuffer.allocate(1024);
+//		b.put(this.ddi.dealData(this.msg,  this.dc, this.addr).getBytes());  
+//		b.flip();  
+//		
+//		try {
+//			this.dc.send(b, this.addr);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		this.ddi.dealData(this.msg,  this.dc, this.addr);
+	}
+	
+}

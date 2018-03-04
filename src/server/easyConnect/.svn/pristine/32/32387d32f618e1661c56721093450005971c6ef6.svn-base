@@ -1,0 +1,94 @@
+package com.easyconnect.thread;
+
+import java.util.List;
+
+import oracle.net.aso.p;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+
+import com.easyconnect.dao.DeviceInUseDao;
+import com.easyconnect.dao.UserDao;
+import com.easyconnect.dao.impl.DeviceInUseDaoImpl;
+import com.easyconnect.dao.impl.UserDaoImpl;
+import com.easyconnect.pojo.AppUser;
+import com.easyconnect.pojo.DeviceInUsing;
+import com.easyconnect.service.HeartBeatService;
+import com.easyconnect.util.SpringContextUtil;
+
+
+public class DetectThread extends Thread{
+	// 此类主要是刷新数据库，判断用户是否掉线，每五分钟刷新一次
+	
+	private DeviceInUseDao deviceInUseDaoImpl;
+	private UserDao userDaoImpl;
+	private HeartBeatService heartBeatServiceImpl;
+	
+	private List<AppUser> appUsers;
+	private List<DeviceInUsing> deviceInUsings;
+	
+	public DetectThread(UserDao userDao, DeviceInUseDao deviceInUseDao, HeartBeatService heartBeatService) {
+		// TODO Auto-generated constructor stub
+		System.out.println("in detectThread: init");
+		this.userDaoImpl = userDao;
+		this.deviceInUseDaoImpl = deviceInUseDao;
+		this.heartBeatServiceImpl = heartBeatService;
+	}
+	
+	@Override
+	public void run() {
+		while (true) {
+			//每隔5分钟扫描一次数据库
+			System.out.println("in detectThread: run");
+			appUsers = userDaoImpl.getAppUsersOnline();
+			deviceInUsings = deviceInUseDaoImpl.getDevicesOnline();
+			
+			if (appUsers == null || deviceInUsings == null) {
+				try {
+					Thread.sleep(300000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			long t = System.currentTimeMillis();
+			
+			for (DeviceInUsing deviceInUsing : deviceInUsings) {
+				try {
+					if (t > deviceInUsing.getHeartTime() + 300000) {
+						//下线
+						System.out.println("in detectThread device : " + deviceInUsing.getDeviceId() + "offline");
+						heartBeatServiceImpl.deviceOffline(deviceInUsing.getDeviceId());
+					}
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				
+			}
+			
+			for (AppUser appUser : appUsers) {
+				try {
+					if (t > appUser.getHeartTime() + 300000) {
+						//下线
+						System.out.println("in detectThread user : " + appUser.getId() + "offline");
+						heartBeatServiceImpl.userOffline(appUser.getId());
+					}
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+			
+			System.out.println("refresh state");
+			
+			try {
+				Thread.sleep(300000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}

@@ -1,0 +1,160 @@
+import Vue from 'vue';
+
+//header组件
+Vue.component('management-header', {
+	template:  "<div class='container'>\
+					<div class='nav-header'>\
+						<a href='#' class='js-fh5co-nav-toggle fh5co-nav-toggle'><i></i></a>\
+						<h1 id='fh5co-logo'><a href='index.html'>EasyConnect</a></h1>\
+						<nav id='fh5co-menu-wrap' role='navigation'>\
+							<ul class='sf-menu' id='fh5co-primary-menu'>\
+								<li><a href='../index.html'>首页</a></li>\
+								<li><a href='../jianjie.html'>简介</a></li>\
+								<li><a href='../doc.html'>文档</a></li>\
+								<li><a href='../sdkdownload.html'>SDK下载</a></li>\
+								<li>\
+									<a href='services.html' class='fh5co-sub-ddown'>我的后台</a>\
+									 <ul class='fh5co-sub-menu'>\
+									 	<li><a href='index.html'>设备管理</a></li>\
+									 	<li><a href='right-sidebar.html'>个人信息</a></li>\
+									</ul>\
+								</li>\
+								<li><a href=''>注销</a></li>\
+							</ul>\
+						</nav>\
+					</div>\
+				</div>"
+
+});
+
+// Vue.component('device-management-table', {
+// 	template:  "<tr>\
+// 					<td>000123456</td>\
+// 					<td>台灯</td>\
+// 					<td>灯类</td>\
+// 					<td>飞利浦-L123456</td>\
+// 					<td>已完成</td>\
+// 					<td><a class='table-option'>详情</a> <a class='table-option'>删除</a></td>\
+// 				</tr>"
+// });
+
+
+//footer组件
+Vue.component('easyconnect-footer', {
+	template: "<div class='container'>\
+					<div class='row'>\
+						<div class='col-md-4'>\
+							<div class='copyright'>\
+								<p><small>&copy; 2017 javaee课设小组 <a href='index.html'>易建联</a>. All Rights Reserved.</small></p>\
+							</div>\
+						</div>\
+						<div class='col-md-6'>\
+							<div class='row'>\
+								<div class='col-md-4'>\
+									<h3>Company</h3>\
+									<ul class='link'>\
+										<li><a href='#'>About Us</a></li>\
+										<li><a href='#'>Energy</a></li>\
+										<li><a href='#'>Customer Care</a></li>\
+										<li><a href='#'>Contact Us</a></li>\
+									</ul>\
+								</div>\
+								<div class='col-md-6'>\
+									<h3>Subscribe</h3>\
+									<p>Far far away, behind the word mountains, far from the countries</p>\
+									<form action='#' id='form-subscribe'>\
+										<div class='form-field'>\
+											<input type='email' placeholder='Email Address' id='email'>\
+											<input type='submit' id='submit' value='Send'>\
+										</div>\
+									</form>\
+								</div>\
+							</div>\
+						</div>\
+						<div class='col-md-2'>\
+							<ul class='social-icons'>\
+								<li>\
+									<a href='#'><i class='icon-twitter-with-circle'></i></a>\
+									<a href='#'><i class='icon-facebook-with-circle'></i></a>\
+									<a href='#'><i class='icon-instagram-with-circle'></i></a>\
+									<a href='#'><i class='icon-linkedin-with-circle'></i></a>\
+								</li>\
+							</ul>\
+						</div>\
+					</div>\
+				</div>"
+			});
+
+
+
+/*
+	提示框组件
+
+	- 使用方法
+	- HTML
+	<message-hint-box ref="messageBox"></message-hint-box>
+
+	- JS调用
+	app.$refs.messageBox.showBox('提示信息', function () {
+		//回调函数
+	});
+ */
+Vue.component('messageHintBox', {
+	data: function () {
+		return {
+			ifShowBox: false,
+			message: null,
+			callback: null
+		}
+	},
+	methods: {
+		confirmButtonClick: function () {
+			this.ifShowBox = !this.ifShowBox;
+			if (this.callback) {
+				this.callback();
+				this.callback = null;
+			}
+		},
+		showBox: function (message, callback) {
+			this.ifShowBox = !this.ifShowBox;
+			this.message = message;
+			this.callback = callback ? callback : null;
+		}
+	},
+	template: "<div class='hintBoxWrapper' v-if='ifShowBox'>\
+				<div class='hintBox'>\
+					<p>{{ message }}</p>\
+					<a v-on:click='confirmButtonClick'>确定</a>\
+				</div>\
+			</div>"
+});
+
+
+
+
+
+
+/*
+	加载中提示动画
+
+	使用方法
+
+	<loading-animate ref="loadingAnimation"></loading-animate>
+
+	app.$refs.loadingAnimation.showOrHide(true);//传入true显示 false隐藏
+ */
+Vue.component('loadingAnimate', {
+	data: function () {
+		return {
+			ifShowAnimation: true
+		}
+	},
+	methods: {
+		showOrHide: function (ifShow) {
+			this.ifShowAnimation = ifShow;
+		}
+	},
+	template: "<div class='loadAnimationWrapper' v-if='ifShowAnimation'>\
+					<img src='../images/loader.gif' alt=''/>\
+			</div>"
+});

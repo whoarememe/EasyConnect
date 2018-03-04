@@ -1,0 +1,47 @@
+package com.easyconnect.bean;
+
+import javax.persistence.Entity;
+
+@Entity
+public class DeveloperBean {
+	
+	private Integer developerId;
+	
+	private String developerName;
+	
+	private String phone;
+
+	public DeveloperBean(Integer developerId, String developerName, String phone) {
+		super();
+		this.developerId = developerId;
+		this.developerName = developerName;
+		this.phone = phone;
+	}
+
+	public Integer getDeveloperId() {
+		return developerId;
+	}
+
+	public void setDeveloperId(Integer developerId) {
+		this.developerId = developerId;
+	}
+
+	public String getDeveloperName() {
+		return developerName;
+	}
+
+	public void setDeveloperName(String developerName) {
+		this.developerName = developerName;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	
+	
+
+}

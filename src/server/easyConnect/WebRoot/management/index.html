@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>EasyConnect-易建联</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+
+  
+
+  	<!-- Facebook and Twitter integration -->
+	<meta property="og:title" content=""/>
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content=""/>
+	<meta property="og:site_name" content=""/>
+	<meta property="og:description" content=""/>
+	<meta name="twitter:title" content="" />
+	<meta name="twitter:image" content="" />
+	<meta name="twitter:url" content="" />
+	<meta name="twitter:card" content="" />
+
+	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+	<link rel="shortcut icon" href="favicon.ico">
+
+	<!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet"> -->
+	
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="../css/animate.css">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="../css/icomoon.css">
+	<!-- Simple Line Icons -->
+	<link rel="stylesheet" href="../css/simple-line-icons.css">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="../css/bootstrap.css">
+	<!-- Superfish -->
+	<link rel="stylesheet" href="../css/superfish.css">
+	<!-- Flexslider  -->
+	<link rel="stylesheet" href="../css/flexslider.css">
+
+	<link rel="stylesheet" href="../css/style.css">
+
+
+	<!-- Modernizr JS -->
+	<script src="../js/modernizr-2.6.2.min.js"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	
+
+
+
+
+
+	</head>
+	<body>
+		<div id="app">
+			<div id="fh5co-wrapper">
+			<div id="fh5co-page">
+			<div id="fh5co-header">
+				<header id="fh5co-header-section">
+					<management-header></management-header>
+				</header>		
+			</div>
+
+			<div id="fh5co-contact-section">
+				<div class="container">
+					<h3 class="section-title">DeviceManagement</h3>
+					<section>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>类型</th>
+									<th>型号</th>
+									<th>状态</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="d in deviceList">
+									<td>{{ d.developerDevideId }}</td>
+									<td>{{ d.deviceType }}</td>
+									<td>{{ manufacturer }}-{{ d.model }}</td>
+									<td>{{ d.state }}</td>
+									<td><a v-bind:href=" './devicedetail.html?developerDeviceId=' + d.developerDevideId" class="table-option">详情</a> <a class="table-option" v-on:click="deleteDevice(d.developerDevideId)">删除</a></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td><a href="adddevice.html">添加设备</a></td>
+								</tr>
+							</tbody>
+						</table>
+
+					</section>
+				</div>
+			</div>
+			
+			<message-hint-box ref="messageBox"></message-hint-box>
+
+			<footer id="footer">
+				<easyconnect-footer></easyconnect-footer>
+			</footer>
+		
+
+			<loading-animate ref="loadingAnimation"></loading-animate>
+			
+		</div>
+		<!-- END fh5co-page -->
+
+		</div>
+		<!-- END fh5co-wrapper -->
+
+	</div>
+
+
+	<script src="../js/vue.js"></script>
+	<script src="../js/management.js"></script>
+	<script src="./js/managementCommon.js"></script>
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/jquery.cookie.min.js"></script>
+
+	<script>
+		var app = new Vue({
+		  	el: '#app',
+		  	data: {
+				deviceList: [],
+				manufacturer: $.cookie('manufacturerId')
+		  	},
+		  	methods: {
+		  		deleteDevice: function (id) {
+		  			app.$refs.loadingAnimation.showOrHide(true);
+		  			$.ajax({
+						url: '/EasyConnect/developer/deleteDeveloperDevice',
+						data: {
+							developerDeviceId: id
+						},
+						dataType: 'json',
+						method: 'GET',
+						success: function (data) {
+							logoutAjaxHandler(data, function (data) {
+								app.$refs.loadingAnimation.showOrHide(false);
+								if (data.success == true) {
+									app.$refs.messageBox.showBox('删除成功', function () {
+										window.location = 'index.html';
+									});
+								}
+								else {
+									app.$refs.messageBox.showBox('已上线设备无法删除');
+								}
+							});
+						}
+					});
+		  		}
+		  	}
+		});
+
+		app.$refs.loadingAnimation.showOrHide(true);
+		$.ajax({//ajax获取设备列表 getDeveloperDevice
+			url: '/EasyConnect/developer/getDeveloperDevice',
+			data: {},
+			dataType: 'json',
+			method: 'GET',
+			success: function (data) {
+				logoutAjaxHandler(data, function (data) {
+					if (data.data) {
+						data.data.developerDeviceList.forEach(function (item, index) {
+							item.state = dataDictionaryFilter('deviceOnlineState', item.state);
+						});
+						app.deviceList = data.data.developerDeviceList;
+					}
+					app.$refs.loadingAnimation.showOrHide(false);
+				});
+			}
+		});
+
+
+
+
+
+
+	</script>
+
+	
+	<!-- jQuery Easing -->
+	<script src="../js/jquery.easing.1.3.js"></script>
+	<!-- Bootstrap -->
+	<script src="../js/bootstrap.min.js"></script>
+	<!-- Waypoints -->
+	<script src="../js/jquery.waypoints.min.js"></script>
+	<!-- Superfish -->
+	<script src="../js/hoverIntent.js"></script>
+	<script src="../js/superfish.js"></script>
+	<!-- Flexslider -->
+	<script src="../js/jquery.flexslider-min.js"></script>
+	<!-- Stellar -->
+	<script src="../js/jquery.stellar.min.js"></script>
+	<!-- Counters -->
+	<script src="../js/jquery.countTo.js"></script>
+
+	<!-- Main JS (Do not remove) -->
+	<script src="../js/main.js"></script>
+
+<!-- 	<script src="../js/headerAndFooter.js"></script> -->
+
+	
+	
+
+
+
+
+
+
+
+
+
+	
+
+	</body>
+</html>
+

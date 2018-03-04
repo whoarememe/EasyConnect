@@ -1,0 +1,43 @@
+package com.easyconnect.dao.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+
+import com.easyconnect.dao.BaseDao;
+import com.easyconnect.dao.DeviceInUseDao;
+import com.easyconnect.dao.HeartBeatDao;
+import com.easyconnect.dao.UserDao;
+import com.easyconnect.pojo.AppUser;
+import com.easyconnect.pojo.DeviceInUsing;
+
+@Repository
+public class HeartBeatDaoImpl implements HeartBeatDao{
+
+	@Autowired
+	private DeviceInUseDao deviceInUseDao;
+	
+	@Autowired
+	private UserDao userDaoImpl;
+	
+	@Autowired
+	private BaseDao baseDaoImpl;
+	
+	@Override
+	public DeviceInUsing updateDevice(Integer deviceId, String ip, Integer port) {
+		// TODO Auto-generated method stub
+		DeviceInUsing deviceInUsing = deviceInUseDao.getDeviceByDeviceId(deviceId);
+		
+		return deviceInUsing;
+				
+	}
+
+	@Override
+	public AppUser updateUser(Integer userId, String ip, Integer port) {
+		// TODO Auto-generated method stub
+		AppUser appUser = userDaoImpl.getUserByUserId(userId);
+		
+		return appUser;
+	}
+
+}

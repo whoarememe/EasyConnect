@@ -1,0 +1,102 @@
+package com.easyconnect.service.impl;
+
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.easyconnect.dao.BaseDao;
+import com.easyconnect.dao.DeveloperDeviceDao;
+import com.easyconnect.dao.DeviceInUseDao;
+import com.easyconnect.dao.HeartBeatDao;
+import com.easyconnect.dao.UserDao;
+import com.easyconnect.pojo.AppUser;
+import com.easyconnect.pojo.DeveloperDevice;
+import com.easyconnect.pojo.DeviceInUsing;
+import com.easyconnect.service.HeartBeatService;
+
+@Service
+public class HeartBeatServiceImpl implements HeartBeatService{
+	
+	@Autowired
+	private HeartBeatDao heartBeatDaoImpl;
+	
+	@Autowired
+	private BaseDao baseDaoImpl;
+	
+	@Autowired
+	private DeviceInUseDao deviceInUseDaoImpl;
+	
+	@Autowired
+	private UserDao userDaoImpl;
+	
+	@Autowired
+	private DeveloperDeviceDao developerDeviceDaoImpl;
+
+	@Override
+	public void deviceHeartBeat(Integer deviceId, Integer developerDeviceId, String password, String ip, Integer port) {
+		// TODO Auto-generated method stub
+		DeviceInUsing deviceInUsing = heartBeatDaoImpl.updateDevice(deviceId, ip, port);
+
+		if (deviceInUsing != null) {
+			deviceInUsing.setIp(ip);
+			deviceInUsing.setPort(port);
+			deviceInUsing.setState(1);
+			deviceInUsing.setHeartTime(System.currentTimeMillis());
+			baseDaoImpl.update(deviceInUsing);
+		} else {
+			//否则的话就是设备第一次上线
+			DeveloperDevice developerDevice = developerDeviceDaoImpl.getDeveloperDeviceById(developerDeviceId);
+			DeviceInUsing diuNewDeviceInUsing = new DeviceInUsing(deviceId, developerDevice, password, 1);
+			diuNewDeviceInUsing.setIp(ip);
+			diuNewDeviceInUsing.setPort(port);
+			diuNewDeviceInUsing.setState(1);
+			diuNewDeviceInUsing.setHeartTime(System.currentTimeMillis());
+			try {
+				baseDaoImpl.add(diuNewDeviceInUsing);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+			System.out.println("i am new here");
+		}
+	}
+
+	@Override
+	public void userHeartBeat(Integer userId, String ip, Integer port) {
+		// TODO Auto-generated method stub
+		AppUser appUser = heartBeatDaoImpl.updateUser(userId, ip, port);
+		
+		if (appUser != null) {
+			appUser.setIp(ip);
+			appUser.setPort(port);
+			appUser.setHeartTime(System.currentTimeMillis());
+			appUser.setState(1);
+			
+			baseDaoImpl.update(appUser);
+		} 
+
+	}
+
+	@Override
+	public void deviceOffline(Integer deviceId) {
+		// TODO Auto-generated method stub
+		DeviceInUsing deviceInUsing = deviceInUseDaoImpl.getDeviceByDeviceId(deviceId);
+		if (deviceInUsing != null) {
+			deviceInUsing.setState(0);
+			baseDaoImpl.update(deviceInUsing);
+		}
+		
+	}
+
+	@Override
+	public void userOffline(Integer userId) {
+		// TODO Auto-generated method stub
+		AppUser appUser = userDaoImpl.getUserByUserId(userId);
+		if (appUser != null ) {
+			appUser.setState(0);
+			baseDaoImpl.update(appUser);
+		}
+	}
+
+}

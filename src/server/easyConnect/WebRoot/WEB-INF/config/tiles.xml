@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE tiles-definitions PUBLIC  
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"  
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="clientIndex" template="/admin/layout/indexLayout.jsp">
+		<put-attribute name="header" value="/admin/tiles/index_header.jsp" />
+		<put-attribute name="menu" value="/admin/tiles/proof/menu_proof.jsp" />
+		<put-attribute name="content"
+			value="/admin/tiles/content_client_index.jsp" />
+		<put-attribute name="footer" value="/admin/tiles/footer.jsp" />
+	</definition>
+	
+	<definition name="adminIndex" template="/admin/layout/indexLayout.jsp">
+		<put-attribute name="header" value="/admin/tiles/index_header.jsp" />
+		<put-attribute name="menu" value="/admin/tiles/menu_common.jsp" />
+		<put-attribute name="content"
+			value="/admin/tiles/content_admin_index.jsp" />
+		<put-attribute name="footer" value="/admin/tiles/footer.jsp" />
+	</definition>
+
+	<definition name="adminIndex" extends="clientIndex">
+		<put-attribute name="content"
+			value="/admin/tiles/content_admin_index.jsp" />
+	</definition> 
+
+
+	<!-- proof pages -->
+	<definition name="clientProof" template="/admin/layout/proofLayout.jsp">
+		<put-attribute name="menu" value="/admin/tiles/proof/menu_proof.jsp" />
+		<put-attribute name="header" value="/admin/tiles/index_header.jsp" />
+		<put-attribute name="content"
+			value="/admin/tiles/proof/content_client_index.jsp" />
+		<put-attribute name="footer" value="/admin/tiles/footer.jsp" />
+	</definition>
+
+	<definition name="personalInfo" extends="clientProof">
+		<put-attribute name="content"
+			value="/admin/tiles/personal_info_show.jsp" />
+	</definition>
+
+	<definition name="clientProof_1" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_1.jsp">
+				<put-attribute name="proofInfo"
+					value="/admin/tiles/proof/proof_info_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+
+	<definition name="clientProof_2" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_2.jsp">
+				<put-attribute name="proofInfo"
+					value="/admin/tiles/proof/proof_info_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+
+	<definition name="clientProof_3" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_3.jsp">
+				<put-attribute name="proofInfo"
+					value="/admin/tiles/proof/proof_info_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+
+	<definition name="clientProof_4" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_4.jsp">
+				<put-attribute name="proofInfo"
+					value="/admin/tiles/proof/proof_info_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+	
+	<definition name="clientProof_5" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_5.jsp">
+				<put-attribute name="proofInfo"
+					value="/admin/tiles/proof/proof_info_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+	
+	<definition name="clientProof_6" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_6.jsp">
+				<put-attribute name="proofInfo"
+					value="/admin/tiles/proof/proof_info_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+	
+	<definition name="clientProof_7" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_7.jsp">
+				<put-attribute name="proofInfo"
+					value="/admin/tiles/proof/proof_info_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+	
+	
+	<definition name="clientProof_8" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_8.jsp">
+				<put-attribute name="stuWorkInfo"
+					value="/admin/tiles/proof/proof_stuWork_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+	
+	<definition name="clientProof_9" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_9.jsp">
+				<put-attribute name="proofInfo"
+					value="/admin/tiles/proof/proof_info_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+	
+	<definition name="clientProof_10" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_10.jsp">
+				<put-attribute name="proofInfo"
+					value="/admin/tiles/proof/proof_info_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+	
+	<definition name="clientProof_11" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_11.jsp">
+				<put-attribute name="stuWorkInfo"
+					value="/admin/tiles/proof/proof_stuWork_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+	
+	<definition name="clientProof_12" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_12.jsp">
+				<put-attribute name="proofInfo"
+					value="/admin/tiles/proof/proof_info_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+	
+	<definition name="clientProof_20" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_20.jsp">
+				<put-attribute name="researchInfo"
+					value="/admin/tiles/proof/proof_research_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+	
+	<definition name="clientProof_21" extends="clientProof">
+		<put-attribute name="content">
+			<definition template="/admin/tiles/proof/proof_page_21.jsp">
+				<put-attribute name="researchInfo"
+					value="/admin/tiles/proof/proof_research_panel.jsp" />
+			</definition>
+		</put-attribute>
+	</definition>
+	 <definition name="clientProof_22" extends="clientProof">
+  <put-attribute name="content">
+   <definition template="/admin/tiles/proof/proof_page_22.jsp">
+    <put-attribute name="researchInfo"
+     value="/admin/tiles/proof/proof_research_panel.jsp" />
+   </definition>
+  </put-attribute>
+ </definition>
+ 
+ <definition name="clientProof_23" extends="clientProof">
+  <put-attribute name="content">
+   <definition template="/admin/tiles/proof/proof_page_23.jsp">
+    <put-attribute name="researchInfo"
+     value="/admin/tiles/proof/proof_research_panel.jsp" />
+   </definition>
+  </put-attribute>
+ </definition>
+ 
+ <definition name="clientProof_24" extends="clientProof">
+  <put-attribute name="content">
+   <definition template="/admin/tiles/proof/proof_page_24.jsp">
+    <put-attribute name="researchInfo"
+     value="/admin/tiles/proof/proof_research_panel.jsp" />
+   </definition>
+  </put-attribute>
+ </definition>
+	<definition name="checkIndex" template="/admin/layout/checkLayout.jsp">
+		<put-attribute name="header" value="/admin/tiles/index_header.jsp" />
+		<put-attribute name="menu" value="/admin/tiles/check/check_menu_normal.jsp" />
+		<put-attribute name="content" value="/admin/tiles/check/check_list_page.jsp" />
+		<put-attribute name="footer" value="/admin/tiles/footer.jsp" />
+	</definition>
+
+	<definition name="restrictedCheckIndex" extends="checkIndex">
+		<put-attribute name="menu"
+			value="/admin/tiles/check/check_menu_restricted.jsp" />
+	</definition>
+
+	<definition name="reportPage" template="/admin/layout/fixedLayout.jsp">
+		<put-attribute name="menu" value="/admin/tiles/report_menu.jsp" />
+		<put-attribute name="content" value="/admin/tiles/report_page.jsp" />
+		<put-attribute name="header" value="/admin/tiles/index_header.jsp" />
+		<put-attribute name="footer" value="/admin/tiles/footer.jsp" />
+	</definition>
+	
+	<definition name="tablePage" template="/admin/layout/fixedLayout.jsp">
+		<put-attribute name="menu" value="/admin/tiles/table/table_menu.jsp" />
+		<put-attribute name="content" value="/admin/tiles/table/table_page.jsp" />
+		<put-attribute name="header" value="/admin/tiles/index_header.jsp" />
+		<put-attribute name="footer" value="/admin/tiles/footer.jsp" />
+	</definition>
+	<!-- 学位审批表页面 -->
+	<definition name="favoriteForm" extends="clientProof">
+		<put-attribute name="content"
+			value="/admin/tiles/forms/favorite_form_page.jsp" />
+	</definition>
+
+
+</tiles-definitions>  

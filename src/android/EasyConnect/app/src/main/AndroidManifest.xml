@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="drjery.com.easyconnect">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <application
+        android:name="org.litepal.LitePalApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_device"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".activity.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.CommunicateActivity" />
+        <activity android:name=".activity.DeviceActivity" />
+
+        <service
+            android:name=".Service.AutoUpdateMessageService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".activity.AddDeviceActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.ChangeUserPasswdActivity" />
+        <activity android:name=".activity.ChangeDevicePasswdActivity" />
+
+        <service
+            android:name=".Service.MessageService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".activity.ShareDeviceActivity"></activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,24 @@
+package com.easyconnect.service;
+
+import java.util.List;
+
+import com.easyconnect.pojo.AppUser;
+import com.easyconnect.pojo.Message;
+import com.easyconnect.pojo.UserDevice;
+
+public interface UserService {
+	
+	public AppUser userLogin(String phone,String password);//登录
+	
+	public AppUser userRegister(String phone,String name,String password,String mail);//注册
+	
+	public List<Message> getUserUnreadMsg(Integer userId);//获取未读消息
+	
+	
+	
+	public boolean sendMsgToDev(Integer deviceId,Integer direction,Integer userId,Integer msgType,String msg,Long time);//发送命令
+	
+	public boolean modifyPassword(Integer userId,String password,String newPassword);//修改密码
+	
+
+}

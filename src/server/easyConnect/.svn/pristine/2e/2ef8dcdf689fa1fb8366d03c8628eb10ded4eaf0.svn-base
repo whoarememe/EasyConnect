@@ -1,0 +1,225 @@
+package com.easyconnect.thread;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channel;
+import java.nio.channels.DatagramChannel;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.easyconnect.dao.DeveloperDao;
+import com.easyconnect.dao.DeviceInUseDao;
+import com.easyconnect.dao.UserDao;
+import com.easyconnect.dao.UserDeviceDao;
+import com.easyconnect.dao.impl.DeviceInUseDaoImpl;
+import com.easyconnect.pojo.AppUser;
+import com.easyconnect.pojo.Developer;
+import com.easyconnect.pojo.DeviceInUsing;
+import com.easyconnect.service.DeviceService;
+import com.easyconnect.service.HeartBeatService;
+import com.easyconnect.service.impl.UserServiceImpl;
+
+import net.sf.json.JSONObject;
+
+public class DealDataImpl implements DealDataInterface {
+
+	@Autowired
+	private HeartBeatService heartBeatService;
+	
+	@Autowired
+	private DeviceInUseDaoImpl deviceInUseDaoImpl;
+	
+	@Autowired
+	private UserServiceImpl userServiceImpl;
+	
+	@Autowired
+	private DeveloperDao developerDaoImpl;
+	
+	@Autowired
+	private UserDao userDaoImpl;
+	
+	@Autowired
+	private UserDeviceDao userDeviceDaoImpl;
+	
+	@Autowired
+	private DeviceService deviceServiceImpl;
+	
+	private JSONObject jsonObject;
+	
+	public DealDataImpl() {
+		jsonObject = new JSONObject();
+	}
+	
+	//只需要在这里完成数据的处理和返回的数据就可以了
+	//传入的是json字符串
+	@Override
+	public String dealData(String msg, DatagramChannel dc, InetSocketAddress addr) {
+		// TODO Auto-generated method stub
+
+		jsonObject = JSONObject.fromObject(msg);
+		
+		//code 1 代表心跳
+		//code 2 代表消息数据包
+		if (jsonObject.has("code")) {
+			//首先判断类型
+			switch (jsonObject.getInt("code")) {
+				// 1是心跳
+				case 1:
+				{
+					//from 1 用户
+					//from 2 设备
+					switch (jsonObject.getInt("direction")) {
+					case 1:
+						heartBeatService.userHeartBeat(jsonObject.getInt("userId"), addr.getAddress().toString(), addr.getPort());
+						break;
+					case 2:
+						heartBeatService.deviceHeartBeat(jsonObject.getInt("deviceId"), addr.getAddress().toString(), addr.getPort());
+						break;
+
+					default:
+						break;
+					}
+					break;
+				}
+				// 2是消息
+				case 2:
+				{
+					ByteBuffer b = ByteBuffer.allocate(1024);
+					//direction 1 用户
+					//direction 2 设备
+					switch (jsonObject.getInt("direction")) {
+					case 1: {
+						// 首先做一个转发，将数据转发给设备，其次在存储到数据库
+						// 转发需要从数据库获取设备是否在线以及设备的ip和端口信息
+						// 判断设备在不在线
+						DeviceInUsing diu = deviceInUseDaoImpl.getDeviceByDeviceId(jsonObject.getInt("deviceId"));
+
+						if (diu == null) {
+							//不存在
+							jsonObject.put("msg", "unknow error");
+							b.put(jsonObject.toString().getBytes());  
+							b.flip();
+							try {
+								dc.send(b, addr);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						} else {
+							if (diu.getState() == 1) {
+								//在线
+								//首先先转发
+								b.put(msg.getBytes());  
+								b.flip();
+								InetSocketAddress address = new InetSocketAddress(diu.getIp(), diu.getPort());
+								try {
+									dc.send(b, address);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								
+								//接下来存储到数据库
+								userServiceImpl.sendMsgToDev(jsonObject.getInt("deviceId"), 1, 
+										jsonObject.getInt("userId"), jsonObject.getInt("msgType"), 
+										jsonObject.getString("msg"), jsonObject.getLong("time"));
+								
+							} else {
+								//不在线
+								jsonObject.put("msg", "device not online");
+								b.put(jsonObject.toString().getBytes());  
+								b.flip();
+								try {
+									dc.send(b, addr);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}
+						
+						break;
+					}
+					//设备发来的消息
+					case 2: {
+						int userId = jsonObject.getInt("userId");
+						int deviceId = jsonObject.getInt("deviceId");
+						
+						//判断是不是0,0那么就向所有拥有者发送，否则向指定拥有者发送
+						if (userId == 0) {
+							//
+							List<AppUser> appUsers = userDeviceDaoImpl.getUsersByDeviceId(deviceId);
+							if (appUsers == null) {
+								//如果目标用户不存在，那么存储到数据库中，标记为未读
+								deviceServiceImpl.sendMsgToApp(userId, deviceId, jsonObject.getInt("msgType"), 
+										jsonObject.getString("msg"), jsonObject.getLong("time"), jsonObject.getInt("level"), 0);
+							} else {
+								int hasRead = 0;
+								//如果目标用户存在，那么发送给目标用户
+								for (AppUser appUser : appUsers) {
+									if (appUser.getState() == 1) {
+										hasRead = 1;
+										//发送个对方
+										InetSocketAddress address = new InetSocketAddress(appUser.getIp(), appUser.getPort());
+										b.put(jsonObject.toString().getBytes());  
+										b.flip();
+										try {
+											dc.send(b, address);
+										} catch (IOException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+									}
+								}
+								
+								//判断在线数量是不是0,0的话存储为未读，1的话存储为已读
+								deviceServiceImpl.sendMsgToApp(userId, deviceId, jsonObject.getInt("msgType"), 
+										jsonObject.getString("msg"), jsonObject.getLong("time"), jsonObject.getInt("level"), hasRead);
+
+							}
+							
+							//存储到数据库，如果所有的目标用户都不在线，那么就是未读，否则是已读
+							
+						} else {
+							AppUser appUser = userDaoImpl.getUserByUserId(userId);
+							
+							//如果用户在线，那么发送数据
+							if (appUser.getState() == 1) {
+								InetSocketAddress address = new InetSocketAddress(appUser.getIp(), appUser.getPort());
+								b.put(jsonObject.toString().getBytes());  
+								b.flip();
+								try {
+									dc.send(b, address);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								deviceServiceImpl.sendMsgToApp(userId, deviceId, jsonObject.getInt("msgType"), 
+										jsonObject.getString("msg"), jsonObject.getLong("time"), jsonObject.getInt("level"), 1);
+							} else {
+								//不在线，那么不发送数据，直接存储到数据库中
+								deviceServiceImpl.sendMsgToApp(userId, deviceId, jsonObject.getInt("msgType"), 
+										jsonObject.getString("msg"), jsonObject.getLong("time"), jsonObject.getInt("level"), 0);
+								
+							}
+						}
+						
+						break;
+					}
+					
+					default:
+						break;
+					}
+					break;
+				}
+				default:
+					break;
+			}
+		}
+		
+		return "helo test";
+	}
+
+}

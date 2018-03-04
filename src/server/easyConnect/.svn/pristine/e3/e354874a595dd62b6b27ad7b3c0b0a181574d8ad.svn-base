@@ -1,0 +1,41 @@
+package com.easyconnect.bean;
+
+import java.util.List;
+
+import javax.persistence.Entity;
+//供getDeveloperDevice接口使用
+@Entity
+public class DeveloperDeviceBean {
+	
+	private Integer developerId;
+	
+	private List<DeveloperDeviceList> developerDeviceList;//开发者设备列表
+	
+	
+
+	public DeveloperDeviceBean(Integer developerId,
+			List<DeveloperDeviceList> developerDeviceList) {
+		super();
+		this.developerId = developerId;
+		this.developerDeviceList = developerDeviceList;
+	}
+
+	public Integer getDeveloperId() {
+		return developerId;
+	}
+
+	public void setDeveloperId(Integer developerId) {
+		this.developerId = developerId;
+	}
+
+	public List<DeveloperDeviceList> getDeveloperDeviceList() {
+		return developerDeviceList;
+	}
+
+	public void setDeveloperDeviceList(List<DeveloperDeviceList> developerDeviceList) {
+		this.developerDeviceList = developerDeviceList;
+	}
+	
+	
+
+}

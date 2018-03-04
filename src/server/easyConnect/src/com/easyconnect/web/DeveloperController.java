@@ -1,0 +1,244 @@
+package com.easyconnect.web;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
+
+import com.easyconnect.bean.DeveloperBean;
+import com.easyconnect.bean.DeveloperDeviceBean;
+import com.easyconnect.bean.DeveloperDeviceDetailBean;
+import com.easyconnect.bean.DeveloperDeviceList;
+import com.easyconnect.bean.DeviceTypeBean;
+import com.easyconnect.pojo.Developer;
+import com.easyconnect.pojo.DeveloperDevice;
+import com.easyconnect.pojo.DeviceType;
+import com.easyconnect.pojo.Manufacturer;
+import com.easyconnect.service.DeveloperService;
+import com.easyconnect.util.ResponseMapUtil;
+
+@Controller
+@RequestMapping(value = "/developer")
+@SessionAttributes("developerId")
+public class DeveloperController {
+	
+	@Autowired
+	private DeveloperService developerService;
+
+
+	@RequestMapping(value = "/developerLogin",method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> developerLogin(String phone,String password,HttpSession session) {
+		
+		Developer developer = developerService.developerLogin(phone, password);
+		
+		if(developer!=null)
+		{
+			session.setAttribute("developerId", developer.getId());	
+			DeveloperBean developerBean = new DeveloperBean(developer.getId(), developer.getName(), developer.getPhone(),developer.getManufacturerId());			
+			return ResponseMapUtil.responseSuccess(developerBean);
+			
+		}
+		
+		return ResponseMapUtil.responseError("");
+	}
+	
+	@RequestMapping(value = "/developerLogut",method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> developerLogut(HttpSession session,SessionStatus sessionStatus)
+	{
+
+		Integer developerId=(Integer) session.getAttribute("developerId");
+		System.out.println(session.getAttribute("developerId"));
+		
+		if (developerId == null)
+			return ResponseMapUtil.responseError("login timeout");
+		
+		boolean result = developerService.developerLogut(developerId);
+		if(result)
+		{
+			session.invalidate();
+			sessionStatus.setComplete();
+			
+			return ResponseMapUtil.responseSuccessMess("logout successful");
+		}
+			
+		return ResponseMapUtil.responseError("logout failed");
+			
+	}
+	
+	@RequestMapping(value = "/getManufacturer",method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getManufacturer()
+	{
+		List<Manufacturer> manufacturerList =developerService.getManufacturer();
+		if (manufacturerList != null) 
+		{
+			return ResponseMapUtil.responseSuccess(manufacturerList);
+		}
+
+		return ResponseMapUtil.responseError("");
+	}
+	
+	@RequestMapping(value = "/developerRegister",method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> developerRegister(String phone,String password,Integer manufacturerId,String name)
+	{
+		Developer developer = developerService.developerRegister(phone, password, manufacturerId, name);
+		if(developer != null)
+		{
+			return ResponseMapUtil.responseSuccess(developer.getId());//return developer id
+		}
+		
+		return ResponseMapUtil.responseError("");
+	}
+	
+	@RequestMapping(value = "/getDeveloperDevice",method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getDeveloperDevice(HttpSession session)
+	{
+		Integer developerId=(Integer) session.getAttribute("developerId");
+		if (developerId == null)
+		{
+			return ResponseMapUtil.responseError("login timeout");
+		}
+//		System.out.println("session:"+developerId);
+		List<DeveloperDevice> developerDeviceList= developerService.getDeveloperDevice(developerId);//get devices'detail which exist in data base of the developer
+		
+		if(developerDeviceList !=null)
+		{
+			List<DeveloperDeviceList> deviceList = new ArrayList<DeveloperDeviceList>();
+			for(int i=0;i<developerDeviceList.size();i++)
+			{
+				DeveloperDevice developerDevice = developerDeviceList.get(i);
+		
+				DeveloperDeviceList developerDeviceBeanList = new DeveloperDeviceList(developerDevice.getId(), developerDevice.getDeviceType().getId(),developerDevice.getDeviceType().getTypeName(),developerDevice.getModel(), developerDevice.getState(), developerDevice.getKeyWord(),developerDevice.getFucntion().getId(), developerDevice.getDescription());
+				deviceList.add(developerDeviceBeanList);
+			}
+			DeveloperDeviceBean developerDeviceBean = new DeveloperDeviceBean(developerId,deviceList);//return detail information
+			return ResponseMapUtil.responseSuccess(developerDeviceBean);
+		}
+		
+		
+		return ResponseMapUtil.responseError("");
+	}
+	
+	@RequestMapping(value = "/getAllDeviceType",method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getAllDeviceType()
+	{
+		List<DeviceType> deviceTypeList = developerService.getAllDeviceType();
+		
+		if(deviceTypeList!=null)
+		{
+			List<DeviceTypeBean> deviceTypeBeanList = new ArrayList<DeviceTypeBean>();
+			for(int i=0;i<deviceTypeList.size();i++)
+			{
+				DeviceTypeBean deviceTypeBean = new DeviceTypeBean(deviceTypeList.get(i).getId(),deviceTypeList.get(i).getTypeName(),deviceTypeList.get(i).getPic());
+				deviceTypeBeanList.add(deviceTypeBean);
+			}
+			return ResponseMapUtil.responseSuccess(deviceTypeBeanList);
+		}
+		return ResponseMapUtil.responseError("");
+	}
+	
+	@RequestMapping(value = "/addDeveloperDevice",method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> addDeveloperDevice(HttpSession session,Integer typeId,String model,String description,String function,Integer state)
+	{
+		Integer developerId=(Integer) session.getAttribute("developerId");
+		if (developerId == null)
+		{
+			return ResponseMapUtil.responseError("login timeout");
+		}
+		
+		boolean result = developerService.addDeveloperDevice(developerId, typeId, model, description, function, state);
+		if(result)
+			return ResponseMapUtil.responseSuccess("");
+		else
+			return ResponseMapUtil.responseError("");
+	}
+	
+	@RequestMapping(value = "/getDeveloperDeviceDetail",method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getDeveloperDeviceDetail(Integer developerDeviceId)
+	{
+		DeveloperDeviceDetailBean developerDeviceDetailBean = developerService.getDeveloperDeviceDetail(developerDeviceId);
+		
+		if(developerDeviceDetailBean == null)
+			return ResponseMapUtil.responseError("");
+		
+		return ResponseMapUtil.responseSuccess(developerDeviceDetailBean);
+		
+	}
+	
+	@RequestMapping(value = "/developerDeviceOnline", method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> developerDeviceOnline(HttpSession session, Integer developerDeviceId)
+	{
+		Integer developerId=(Integer) session.getAttribute("developerId");
+		if (developerId == null)
+		{
+			return ResponseMapUtil.responseError("login timeout");
+		}
+		
+		boolean result = developerService.developerDeviceOnline(developerDeviceId);
+		if(result)
+			return ResponseMapUtil.responseSuccess("");
+		else
+			return ResponseMapUtil.responseError("");
+	}
+	
+	@RequestMapping(value = "/modifyDeveloperPassword", method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> modifyDeveloperPassword(HttpSession session,String password,String newPassword)
+	{
+		Integer developerId=(Integer) session.getAttribute("developerId");
+		if (developerId == null)
+			return ResponseMapUtil.responseError("login timeout");
+		
+		boolean result = developerService.modifyDeveloperPassword(developerId, password, newPassword);
+		if(result)
+			return ResponseMapUtil.responseSuccessMess("modify success");
+
+		
+		return ResponseMapUtil.responseError("password is wrong");
+	}
+	
+	@RequestMapping(value = "/deleteDeveloperDevice", method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> deleteDeveloperDevice(Integer developerDeviceId)
+	{
+		int result = developerService.deleteDeveloperDevice(developerDeviceId);
+		
+		if(result == 1)
+			return ResponseMapUtil.responseError("not exist this device");
+		if(result == 2)
+			return ResponseMapUtil.responseError("this device is online,you can't delete it");
+		return ResponseMapUtil.responseSuccessMess("delete successful");
+
+	}
+	
+	@RequestMapping(value = "/getDeviceType", method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getDeviceType(Integer deviceTypeId)
+	{
+		DeviceType deviceType = developerService.getDeviceType(deviceTypeId);
+		if(deviceType ==null)
+			return ResponseMapUtil.responseError("not exist this deviceType");
+		
+		DeviceTypeBean deviceTypeBean = new DeviceTypeBean(deviceType.getId(),deviceType.getTypeName(),deviceType.getPic());
+		return ResponseMapUtil.responseSuccess(deviceTypeBean);
+	}
+	
+
+}

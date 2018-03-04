@@ -1,0 +1,4 @@
+function hint (message) {
+	alert(message);
+	return false;
+}

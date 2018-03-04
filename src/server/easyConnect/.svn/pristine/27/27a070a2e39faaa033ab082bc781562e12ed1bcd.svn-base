@@ -1,0 +1,44 @@
+package com.easyconnect.thread;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+
+import com.easyconnect.socket.NioUdp;
+import com.easyconnect.socket.TestUdp;
+import com.easyconnect.socket.Udp;
+import com.easyconnect.util.ConstUtil;
+
+public class HeartThread extends Thread{
+	private Udp udp;
+	private DatagramPacket packet;
+	private DealThread dealt;
+	
+	private NioUdp nudp;
+	private DetectThread detectt;
+	
+	public HeartThread() {	
+//		udp = new Udp(ConstUtil.port);
+		nudp = new NioUdp(ConstUtil.port);
+		detectt = new DetectThread();
+	}
+	
+	@Override
+	public void run() {
+		detectt.start();
+		nudp.start(new DealDataImpl());
+		
+//		while (true) {
+//			this.packet = this.udp.recvfrom(1024);
+//			dt = new DealThread(this.udp, this.packet);
+//			dt.start();
+//			//udp.sendTo(udp.getAddr(), udp.getPort(), "fine");
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+	}
+
+}

@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">EasyConnect</string>
+    <string name="simple_name">ICAs</string>
+    <string name="new_register">新用户？立即注册</string>
+    <string name="login">登       录</string>
+    <string name="title_activity_iot">IOTActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="message">消息</string>
+    <string name="dev">设备</string>
+    <string name="friend">好友</string>
+    <string name="title_activity_help">HelpActivity</string>
+    <string name="light">电灯</string>
+    <string name="add_dev">添加设备</string>
+    <string name="add_fri">添加好友</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

@@ -1,0 +1,35 @@
+
+
+$('#signinbutton').click(function (e) {
+	e.preventDefault();
+	var phone    = $('#phone').val(),
+		password = $('#password').val();
+
+	if (phone.length != 11) {
+		return hint('手机号格式有误');
+	}
+	if (password == '') {
+		return hint('请输入密码');
+	}
+
+	$.ajax({
+		data:{
+			phone: phone,
+			password: password
+		},
+		url: "/EasyConnect/developer/developerLogin",
+		dataType: "json",
+		success:  function(data){
+			console.log(JSON.stringify(data));
+			if (data.success == true) {
+				$.cookie('developerId', data.data.developerId);
+				$.cookie('manufacturerId', data.data.manufacturerId);
+				console.log($.cookie('manufacturerId'));
+				window.location = './management/index.html';
+			}
+			else {
+				alert(data.message);
+			}
+		}
+	});
+});

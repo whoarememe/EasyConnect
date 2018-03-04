@@ -1,0 +1,63 @@
+package com.easyconnect.util;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+
+public class TestThread implements Runnable{
+	private byte data[];
+	private DatagramPacket packet;
+	private InetAddress addr;
+	private int port;
+
+	public TestThread() {		
+		data = new byte[1024];
+		packet = new DatagramPacket(data, data.length);
+		System.out.print("yes");
+		
+	}
+	
+	@Override
+	public void run() {
+		System.out.print("recv");
+		if (ConstUtil.udpSocket == null) {
+			try {
+				ConstUtil.udpSocket = new DatagramSocket(6000);
+				System.out.print("udp");
+				while (true) {
+					System.out.print("recv");
+					try {
+						ConstUtil.udpSocket.receive(packet);
+						addr = packet.getAddress();
+						port = packet.getPort();
+						
+						byte[] data2 = "欢迎您!".getBytes();
+				        // 2.创建数据报，包含响应的数据信息
+				        DatagramPacket packet2 = new DatagramPacket(data2, data2.length, addr, port);
+				        // 3.响应客户端
+				        ConstUtil.udpSocket.send(packet2);
+				        
+						System.out.println("recv");
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					try {
+			            Thread.sleep(1000);
+			        } catch (InterruptedException e) {
+			            e.printStackTrace(); 
+			        }
+				}
+				
+			} catch (SocketException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+}
