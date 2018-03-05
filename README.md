@@ -33,38 +33,44 @@ server端由javaEE编写，将工程加入到Eclipse后运行
 ### 嵌入式SDK
 
   1. 首先下载嵌入式端的sdk，位于`src/sdk`
+
   2. 然后从开发者后台那里获得json配置数据添加到`config.json`文件中
-  3. 请在`include/ec_question.h`中配置您的问题命令，格式如下
-	```c
-	{
-		{0, "闪烁", "请输入闪烁时间"},
-		{0, "变亮", "请输入亮度"},
-		...
-	}
-	```
+
+  3. 请在`include/ec_question.h`中配置您的问题命令，格式如下     
+
+  ```c
+  {
+  	{0, "闪烁", "请输入闪烁时间"},
+  	{0, "变亮", "请输入亮度"},
+  	...
+  }
+  ```
 
   4. 开发时请使用`ec_init()`初始化，您需要传递一个deal函数
 
-	```c
-	/**
-	* @brief  remember free the *msg when finished
-	*
-	* @param
-	* @param msg
-	*
-	* @return
-	*/
-	typedef void (* deal)(int sender, char *msg, char *config);
+  ```c
+  /**
+  * @brief  remember free the *msg when finished
+  *
+  * @param
+  * @param msg
+  *
+  * @return
+  */
+  typedef void (* deal)(int sender, char *msg, char *config);
 
-	/**
-	* @brief ec_init init the ec
-	*/
-	void ec_init(deal d);
+  /**
+  * @brief ec_init init the ec
+  */
+  void ec_init(deal d);
+  ```
 
-	```
+  ​
 
   5. deal函数参数定义如下
 
-	```c
-	void deal_data(int sender/*发送者*/, char *commond/*命令*/, char *config/*配置*/){}
-	```
+  ```c
+  void deal_data(int sender/*发送者*/, char *commond/*命令*/, char *config/*配置*/){}
+  ```
+
+  ​
