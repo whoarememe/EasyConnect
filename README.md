@@ -65,8 +65,6 @@ server端由javaEE编写，将工程加入到Eclipse后运行
   void ec_init(deal d);
   ```
 
-  ​
-
   5. deal函数参数定义如下
 
   ```c
