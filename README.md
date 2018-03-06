@@ -50,14 +50,10 @@ server端由javaEE编写，将工程加入到Eclipse后运行
 
   ```c
   /**
-  * @brief  remember free the *msg when finished
+  * @brief  开发者只需要实现这个函数然后初始化的时候传递给ex_init即可
   *
-  * @param
-  * @param msg
-  *
-  * @return
   */
-  typedef void (* deal)(int sender, char *msg, char *config);
+  typedef void (* deal)(const int sender, const char *msg, const char *config);
 
   /**
   * @brief ec_init init the ec
@@ -68,7 +64,7 @@ server端由javaEE编写，将工程加入到Eclipse后运行
   5. deal函数参数定义如下
 
   ```c
-  void deal_data(int sender/*发送者*/, char *commond/*命令*/, char *config/*配置*/){}
+  void deal_data(const int sender/*发送者*/, const char *commond/*命令*/, const char *config/*配置*/){}
   ```
 
   ​
