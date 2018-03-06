@@ -37,7 +37,7 @@ typedef struct ec_data {
  *
  * @return
  */
-typedef void (* deal)(int sender, char *msg, char *config);
+typedef void (* deal)(const int sender, const char *msg, const char *config);
 
 /**
  * @brief ec_init init the ec
